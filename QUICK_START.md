@@ -5,7 +5,7 @@
 ### Способ 1: Batch файл (Рекомендуется)
 1. **Дважды кликните** на файл `run.bat` в корне проекта
 2. Дождитесь сборки (30 секунд)
-3. Откройте браузер: http://localhost:8080
+3. Откройте браузер: http://localhost:8081
 4. Логин: `admin` / Пароль: `admin`
 
 ### Способ 2: PowerShell скрипт
@@ -22,7 +22,7 @@
 1. Откройте проект
 2. Нажмите Shift+F10 (или зелёную кнопку Run)
 3. Выберите `Demo2Application` → Run
-4. Готово! http://localhost:8080
+4. Готово! http://localhost:8081
 
 ## Linux/Mac
 
@@ -39,7 +39,7 @@ java -jar build/libs/demo2-0.0.1-SNAPSHOT.jar
 
 ## 🔧 Если не работает
 
-### Порт 8080 занят
+### Порт 8081 занят
 ```powershell
 # Windows
 Get-Process java | Stop-Process -Force
@@ -62,17 +62,17 @@ killall java
 
 | Параметр | Значение |
 |----------|----------|
-| **URL** | http://localhost:8080 |
+| **URL** | http://localhost:8081 |
 | **Логин** | admin |
 | **Пароль** | admin |
-| **API Base** | http://localhost:8080/api |
-| **H2 Console** | http://localhost:8080/h2-console |
+| **API Base** | http://localhost:8081/api |
+| **H2 Console** | http://localhost:8081/h2-console |
 | **GitHub** | https://github.com/Abzal05/Hospital-WAD |
 
 ## 🔑 H2 Database Console
 
 Если нужно посмотреть БД:
-- URL: http://localhost:8080/h2-console
+- URL: http://localhost:8081/h2-console
 - JDBC URL: `jdbc:h2:mem:demo2db`
 - Username: `sa`
 - Password: (пусто)
@@ -81,7 +81,7 @@ killall java
 
 ### Создать нового пациента
 ```bash
-curl -X POST http://localhost:8080/api/patients \
+curl -X POST http://localhost:8081/api/patients \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -94,7 +94,7 @@ curl -X POST http://localhost:8080/api/patients \
 
 ### Получить список докторов
 ```bash
-curl -X GET http://localhost:8080/api/doctors \
+curl -X GET http://localhost:8081/api/doctors \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -103,11 +103,10 @@ curl -X GET http://localhost:8080/api/doctors \
 | Проблема | Решение |
 |----------|---------|
 | Приложение не запускается | Проверьте Java 17+: `java -version` |
-| Порт 8080 занят | `taskkill /F /IM java.exe` |
+| Порт 8081 занят | `taskkill /F /IM java.exe` |
 | Ошибка сборки | `./gradlew clean build -x test` |
 | Базу нельзя подключить | Перезагрузите приложение, БД в памяти |
 
 ---
 
 **Нужна помощь?** Смотрите README.md
-
