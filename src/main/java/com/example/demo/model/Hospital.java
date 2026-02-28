@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "hospitals")
@@ -23,6 +24,7 @@ public class Hospital {
     private Instant createdAt = Instant.now();
 
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Doctor> doctors = new ArrayList<>();
 
     public Hospital() {

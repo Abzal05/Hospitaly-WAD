@@ -9,23 +9,11 @@ echo.
 
 setlocal enabledelayedexpansion
 
-REM Остановить все java процессы
-echo Остановляем предыдущие процессы...
-taskkill /F /IM java.exe >nul 2>&1
-timeout /t 2 /nobreak >nul
+set PORT=8081
+if not "%1"=="" set PORT=%1
 
-REM Освободить порт 8080 - метод 1
-echo Освобождаем порт 8080...
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr :8080 ^| findstr LISTENING') do (
-    echo Убиваем процесс %%a на порту 8080...
-    taskkill /F /PID %%a >nul 2>&1
-)
-
-REM Освободить порт 8080 - метод 2 (через PowerShell для надёжности)
-powershell -Command "Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }" >nul 2>&1
-
-timeout /t 2 /nobreak >nul
-echo Порт 8080 очищен!
+REM Остановить процессы, слушающие порт
+call clear-port.bat %PORT%
 
 REM Сборка проекта
 echo.
@@ -37,18 +25,17 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo.
-echo Запуск приложения...
-echo ========================================
-echo URL: http://localhost:8080
-echo Логин: admin
-echo Пароль: admin
-echo ========================================
-echo.
+REM Найти jar
+set JARPATH=build\libs\demo2-0.0.1-SNAPSHOT.jar
+if not exist "%JARPATH%" (
+    echo Не найден JAR: %JARPATH%
+    pause
+    exit /b 1
+)
 
-REM Запуск приложения
+echo.
+echo Запуск приложения на порту %PORT%...
 set JAVA_HOME=C:\Users\Naiman\.jdks\ms-17.0.17
-"%JAVA_HOME%\bin\java.exe" -jar "build\libs\demo2-0.0.1-SNAPSHOT.jar"
+"%JAVA_HOME%\bin\java.exe" -Dserver.port=%PORT% -jar "%JARPATH%"
 
 pause
-

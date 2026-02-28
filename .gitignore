@@ -44,3 +44,40 @@ docs/ИСПРАВЛЕНИЕ_РЕГИСТРАЦИИ.txt
 *.tmp
 *.temp
 
+# Sensitive files (never commit secrets)
+*.keystore
+*.jks
+secrets.properties
+
+# Gradle
+/.gradle
+/build
+/bootWs
+
+# IDEA
+*.iml
+/.idea
+/out
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# H2 database files
+**/data
+
+# Secrets (don't commit personal tokens)
+**/secrets.properties
+
+# Docs: оставить только docs/general
+/docs/*
+!docs/general/**
+
+# Node modules if any
+/node_modules
+
+# Misc
+*.class

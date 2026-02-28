@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "patients")
@@ -31,6 +32,7 @@ public class Patient {
     private Instant createdAt = Instant.now();
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<com.example.demo.model.Appointment> appointments = new ArrayList<>();
 
     public Patient() {
@@ -118,4 +120,3 @@ public class Patient {
         this.appointments = appointments;
     }
 }
-
