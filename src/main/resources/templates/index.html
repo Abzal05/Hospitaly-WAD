@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Управление больницей - Главная</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="brand">
+            <div class="logo">🏥</div>
+            <div>
+                <div class="site-title">Управление больницей</div>
+                <div style="color:var(--muted);font-size:0.9rem">Демонстрационная система</div>
+            </div>
+        </div>
+        <nav class="nav">
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/login}">Вход</a>
+            <a th:href="@{/doctors}">Врачи</a>
+            <a th:href="@{/patients}">Пациенты</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-card">
+            <h1>Управляйте пациентами, врачами и приёмами</h1>
+            <p style="color:var(--muted)">Современная система для управления работой больницы. Используйте веб-интерфейс или REST API для работы с данными.</p>
+
+            <div style="margin-top:1rem;display:flex;gap:0.75rem;align-items:center">
+                <input id="search-input" class="input" placeholder="Поиск врачей по имени или специальности..." style="flex:1" />
+                <a class="btn" id="search-btn">Поиск</a>
+                <a class="btn secondary" id="open-appointment">Запись на приём</a>
+            </div>
+
+            <div class="widgets" style="margin-top:1rem">
+                <div class="widget">
+                    <small>👨‍⚕️ Врачей</small>
+                    <div style="font-size:1.15rem;font-weight:700" id="doctors-count">—</div>
+                </div>
+                <div class="widget">
+                    <small>👥 Пациентов</small>
+                    <div style="font-size:1.15rem;font-weight:700" id="patients-count">—</div>
+                </div>
+                <div class="widget">
+                    <small>📅 Приёмов</small>
+                    <div style="font-size:1.15rem;font-weight:700">В реальном времени</div>
+                </div>
+            </div>
+        </div>
+        <div style="width:360px">
+            <div class="card">
+                <h3>⚡ Быстрые действия</h3>
+                <div class="quick-links">
+                    <a class="btn" th:href="@{/doctors}">📋 Просмотр врачей</a>
+                    <a class="btn secondary" th:href="@{/patients}">🏥 Просмотр пациентов</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Статистика</h3>
+                <p style="color:var(--muted);margin:0 0 0.5rem 0">Основные показатели системы</p>
+                <div style="display:flex;gap:0.5rem">
+                    <div class="badge">✨ Новых: 5</div>
+                    <div class="badge">⏳ В очереди: 3</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-grid">
+        <div>
+            <div class="card">
+                <h3>👨‍⚕️ Последние врачи</h3>
+                <div id="doctors-widget">Загрузка...</div>
+            </div>
+
+            <div class="card">
+                <h3>📅 Свежие приёмы</h3>
+                <div id="appointments-widget">Загрузка...</div>
+            </div>
+
+            <div class="card">
+                <h3>👥 Последние пациенты</h3>
+                <div id="patients-widget">Загрузка...</div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Демонстрационный проект • Создано на Spring Boot
+    </footer>
+</div>
+
+<!-- Modal (hidden) -->
+<div id="modal-root" style="display:none"></div>
+
+<!-- Toasts -->
+<div class="toast-container" id="toast-root"></div>
+
+<script src="/js/app.js"></script>
+<script>
+// wire up search and quick appointment
+document.getElementById('search-btn').addEventListener('click', ()=>{
+  const q=document.getElementById('search-input').value.trim();
+  if(!q){ toast('Enter search term','error'); return; }
+  // navigate to doctors page with query param
+  window.location.href = '/doctors?q=' + encodeURIComponent(q);
+});
+
+document.getElementById('open-appointment').addEventListener('click', ()=>{
+  openQuickAppointmentModal();
+});
+
+document.getElementById('download-report').addEventListener('click', ()=>{
+  downloadReportCSV();
+});
+</script>
+</body>
+</html>

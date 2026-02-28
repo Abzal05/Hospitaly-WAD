@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>👨‍⚕️ Врачи - Управление больницей</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="brand"><div class="logo">🏥</div><div><div class="site-title">👨‍⚕️ Врачи</div></div></div>
+        <nav class="nav"><a th:href="@{/}">Главная</a><a th:href="@{/patients}">Пациенты</a><a th:href="@{/login}">Вход</a></nav>
+    </header>
+
+    <div class="card">
+        <h3>Список врачей</h3>
+        <div id="doctors-list"></div>
+    </div>
+
+    <footer class="footer">Демонстрационный проект</footer>
+</div>
+<script src="/js/app.js"></script>
+<script>document.addEventListener('DOMContentLoaded',()=>renderDoctors('doctors-list'))</script>
+</body>
+</html>
+

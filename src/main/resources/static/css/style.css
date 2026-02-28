@@ -1,0 +1,54 @@
+/* Modern, clean styles for Hospital Management demo */
+:root{
+  --bg:#fff5f5; /* soft pink background */
+  --card:#ffffff;
+  --muted:#6b7280;
+  --primary:#dc2626; /* red-600 */
+  --accent:#f87171; /* red-400 */
+  --success:#16a34a;
+  --danger:#ef4444;
+  --radius:14px;
+  --shadow: 0 10px 30px rgba(2,6,23,0.06);
+}
+html,body{height:100%;}
+body{
+  margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg, #fff 0%, var(--bg) 100%); color:#0f172a;}
+.container{max-width:1150px;margin:2.5rem auto;padding:1rem;}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.brand{display:flex;align-items:center;gap:0.75rem}
+.logo{width:64px;height:64px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:16px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:20px;box-shadow:var(--shadow)}
+.site-title{font-size:1.6rem;font-weight:800}
+.nav a{color:var(--primary);margin-left:1rem;text-decoration:none;font-weight:700}
+.hero{display:flex;gap:1.25rem;align-items:center;margin-bottom:1.5rem}
+.hero-card{flex:1;background:var(--card);padding:1.5rem;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(220,34,34,0.05)}
+.hero h1{margin:0;font-size:2.2rem;color:var(--primary)}
+.widgets{display:flex;gap:1rem;margin-top:1rem}
+.widget{flex:1;padding:1.1rem;background:linear-gradient(180deg, rgba(220,38,38,0.03), rgba(248,113,113,0.02));border-radius:12px;display:flex;flex-direction:column;align-items:flex-start}
+.widget small{color:var(--muted)}
+.card{background:var(--card);padding:1rem;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:1rem}
+.card h3{margin:0 0 0.75rem 0}
+.quick-links a{display:inline-block;margin-right:0.6rem;padding:0.5rem 0.75rem;background:transparent;border:1px solid rgba(220,38,38,0.12);color:var(--primary);border-radius:10px;text-decoration:none}
+.section-grid{display:grid;grid-template-columns:1fr 360px;gap:1rem}
+.list{list-style:none;padding:0;margin:0}
+.list li{padding:0.5rem 0;border-bottom:1px dashed #fff0f0}
+.footer{margin-top:2rem;text-align:center;color:var(--muted);}
+.badge{display:inline-block;padding:0.35rem 0.65rem;border-radius:999px;background:rgba(220,38,38,0.06);font-size:0.85rem;color:var(--primary);border:1px solid rgba(220,38,38,0.08)}
+.btn{display:inline-block;background:var(--primary);color:white;padding:0.55rem 0.9rem;border-radius:10px;text-decoration:none;font-weight:700}
+.btn.secondary{background:var(--accent)}
+.entity-card{display:flex;align-items:center;gap:0.75rem;padding:0.6rem;border-radius:10px}
+.entity-avatar{width:48px;height:48px;border-radius:10px;background:#fff0f0;color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:800}
+.empty{padding:1.25rem;text-align:center;color:var(--muted)}
+
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,0.35);display:flex;align-items:center;justify-content:center;z-index:60}
+.modal{background:var(--card);padding:1.25rem;border-radius:12px;width:520px;box-shadow:var(--shadow)}
+.modal h4{margin:0 0 0.5rem 0}
+.modal form{display:flex;flex-direction:column;gap:0.6rem}
+.input{padding:0.55rem;border-radius:8px;border:1px solid #f3d4d4}
+
+/* Toast */
+.toast-container{position:fixed;right:20px;top:20px;z-index:9999}
+.toast{background:white;border-left:4px solid var(--primary);padding:0.75rem 1rem;border-radius:8px;box-shadow:var(--shadow);margin-bottom:0.6rem}
+
+/* Responsive */
+@media (max-width:900px){.section-grid{grid-template-columns:1fr}.hero{flex-direction:column}.nav a{display:inline-block;margin-left:0.5rem}}

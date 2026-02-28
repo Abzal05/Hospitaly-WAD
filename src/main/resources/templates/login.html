@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Вход - Управление больницей</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+        .auth-container {
+            max-width: 450px;
+            margin: 4rem auto;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .auth-form {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-auth:active {
+            transform: translateY(0);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .alert-danger {
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .alert-success {
+            background: #efe;
+            color: #383;
+            border: 1px solid #cfc;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+            color: #999;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            position: relative;
+            background: white;
+            padding: 0 0.75rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #999;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #e74c3c;
+            border-bottom-color: #e74c3c;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .info-box {
+            background: #f0f8ff;
+            border-left: 4px solid #3498db;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-box small {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="brand">
+            <div class="logo">🏥</div>
+            <div>
+                <div class="site-title">Управление больницей</div>
+                <div style="color:var(--muted);font-size:0.9rem">Демонстрационная система</div>
+            </div>
+        </div>
+        <nav class="nav">
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/doctors}">Врачи</a>
+            <a th:href="@{/patients}">Пациенты</a>
+        </nav>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-form">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('login')">Вход</button>
+                <button class="tab-btn" onclick="switchTab('register')">Регистрация</button>
+            </div>
+
+            <!-- ФОРМА ВХОДА -->
+            <div id="login" class="tab-content active">
+                <h2 style="text-align:center;margin-bottom:1.5rem">Вход в систему</h2>
+
+                <div th:if="${param.error}" class="alert alert-danger">
+                    <span>❌</span>
+                    <span>Неверный логин или пароль</span>
+                </div>
+
+                <div th:if="${param.logout}" class="alert alert-success">
+                    <span>✓</span>
+                    <span>Вы успешно вышли из системы</span>
+                </div>
+
+                <div class="info-box">
+                    <strong>📌 Тестовый аккаунт:</strong><br/>
+                    <small>Логин: <code style="background:#fff;padding:0.25rem 0.5rem;border-radius:0.25rem">admin</code></small><br/>
+                    <small>Пароль: <code style="background:#fff;padding:0.25rem 0.5rem;border-radius:0.25rem">admin</code></small>
+                </div>
+
+                <form th:action="@{/login}" method="post" style="display:flex;flex-direction:column;gap:1rem">
+                    <div class="form-group">
+                        <label for="username">Логин (имя пользователя)</label>
+                        <input type="text" id="username" name="username" required autofocus />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" id="password" name="password" required />
+                    </div>
+                    <button type="submit" class="btn-auth">Войти</button>
+                </form>
+
+                <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #eee;text-align:center;color:#999;font-size:0.9rem">
+                    Нет аккаунта? <a href="#" onclick="switchTab('register');return false" style="color:#e74c3c;text-decoration:none">Создайте его</a>
+                </div>
+            </div>
+
+            <!-- ФОРМА РЕГИСТРАЦИИ -->
+            <div id="register" class="tab-content">
+                <h2 style="text-align:center;margin-bottom:1.5rem">Создание аккаунта</h2>
+
+                <div id="reg-error" class="alert alert-danger" style="display:none">
+                    <span>❌</span>
+                    <span id="reg-error-msg"></span>
+                </div>
+
+                <div id="reg-success" class="alert alert-success" style="display:none">
+                    <span>✓</span>
+                    <span id="reg-success-msg">Аккаунт успешно создан! Войдите с новыми учетными данными</span>
+                </div>
+
+                <form id="register-form" style="display:flex;flex-direction:column;gap:1rem">
+                    <div class="form-group">
+                        <label for="reg-username">Логин (имя пользователя)</label>
+                        <input type="text" id="reg-username" name="username" required minlength="3" />
+                        <small style="color:#999">Минимум 3 символа</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Пароль</label>
+                        <input type="password" id="reg-password" name="password" required minlength="4" />
+                        <small style="color:#999">Минимум 4 символа</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password-confirm">Подтверждение пароля</label>
+                        <input type="password" id="reg-password-confirm" name="confirm" required />
+                    </div>
+                    <button type="submit" class="btn-auth">Создать аккаунт</button>
+                </form>
+
+                <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #eee;text-align:center;color:#999;font-size:0.9rem">
+                    Уже есть аккаунт? <a href="#" onclick="switchTab('login');return false" style="color:#e74c3c;text-decoration:none">Войдите</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Демонстрационный проект • Создано на Spring Boot
+    </footer>
+</div>
+
+<script>
+function switchTab(tab) {
+    // Скрываем все табы
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+    // Показываем выбранный таб
+    document.getElementById(tab).classList.add('active');
+    event.target.classList.add('active');
+}
+
+document.getElementById('register-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('reg-username').value;
+    const password = document.getElementById('reg-password').value;
+    const confirm = document.getElementById('reg-password-confirm').value;
+
+    // Проверка паролей
+    if (password !== confirm) {
+        showError('Пароли не совпадают');
+        return;
+    }
+
+    if (password.length < 4) {
+        showError('Пароль должен быть минимум 4 символа');
+        return;
+    }
+
+    if (username.length < 3) {
+        showError('Логин должен быть минимум 3 символа');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        if (response.ok) {
+            showSuccess('Аккаунт создан! Войдите со своими данными');
+            document.getElementById('register-form').reset();
+            setTimeout(() => switchTab('login'), 2000);
+        } else {
+            const error = await response.text();
+            showError(error || 'Этот логин уже используется');
+        }
+    } catch (error) {
+        showError('Ошибка при создании аккаунта');
+        console.error(error);
+    }
+});
+
+function showError(msg) {
+    const errorDiv = document.getElementById('reg-error');
+    const errorMsg = document.getElementById('reg-error-msg');
+    errorMsg.textContent = msg;
+    errorDiv.style.display = 'flex';
+    document.getElementById('reg-success').style.display = 'none';
+}
+
+function showSuccess(msg) {
+    const successDiv = document.getElementById('reg-success');
+    const successMsg = document.getElementById('reg-success-msg');
+    successMsg.textContent = msg;
+    successDiv.style.display = 'flex';
+    document.getElementById('reg-error').style.display = 'none';
+}
+</script>
+</body>
+</html>
+

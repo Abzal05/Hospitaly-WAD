@@ -1,0 +1,46 @@
+﻿# Build directories
+build/
+.gradle/
+dist/
+*.war
+*.zip
+
+# JAR files (but keep the main application jar)
+# *.jar
+
+# But ignore the build classes
+build/classes/
+build/generated/
+build/reports/
+build/tmp/
+build/resources/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Dependencies
+node_modules/
+*.log
+
+# Database files
+*.h2.db
+*.lock.db
+*.mv.db
+
+# Documentation (исключаем документацию из репозитория)
+docs/БЫСТРЫЙ_СТАРТ.txt
+docs/ИНСТРУКЦИЯ.md
+docs/ИСПРАВЛЕНИЕ_РЕГИСТРАЦИИ.txt
+
+# Temp files
+*.tmp
+*.temp
+
