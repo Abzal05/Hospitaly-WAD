@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.web.context.WebServerApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -23,13 +24,19 @@ public class StartupBrowserLauncher implements ApplicationListener<ApplicationRe
         boolean open = Boolean.parseBoolean(env.getProperty("app.open-browser","false"));
         if (!open) return;
 
-        // Prefer the actual runtime port if available
-        String localPort = env.getProperty("local.server.port");
-        int port = 8080;
-        if (localPort != null) {
-            try { port = Integer.parseInt(localPort); } catch (Exception ignored) {}
+        // Prefer the actual runtime port if available via WebServerApplicationContext
+        int port = 8081; // fallback default
+        if (event.getApplicationContext() instanceof WebServerApplicationContext) {
+            try {
+                port = ((WebServerApplicationContext) event.getApplicationContext()).getWebServer().getPort();
+            } catch (Exception ignored) {}
         } else {
-            try { port = Integer.parseInt(env.getProperty("server.port","8080")); } catch (Exception ignored) {}
+            String localPort = env.getProperty("local.server.port");
+            if (localPort != null) {
+                try { port = Integer.parseInt(localPort); } catch (Exception ignored) {}
+            } else {
+                try { port = Integer.parseInt(env.getProperty("server.port","8081")); } catch (Exception ignored) {}
+            }
         }
 
         String url = "http://localhost:" + port + "/";
