@@ -1,83 +1,27 @@
-﻿# Build directories
-build/
+﻿# Build output
+/build/
+/target/
 .gradle/
-dist/
-*.war
-*.zip
+/out/
 
-# JAR files (but keep the main application jar)
-# *.jar
-
-# But ignore the build classes
-build/classes/
-build/generated/
-build/reports/
-build/tmp/
-build/resources/
-
-# IDE
+# Intellij
 .idea/
-.vscode/
 *.iml
-*.ipr
-*.iws
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Dependencies
-node_modules/
-*.log
-
-# Database files
-*.h2.db
-*.lock.db
-*.mv.db
-
-# Documentation (исключаем документацию из репозитория)
-docs/БЫСТРЫЙ_СТАРТ.txt
-docs/ИНСТРУКЦИЯ.md
-docs/ИСПРАВЛЕНИЕ_РЕГИСТРАЦИИ.txt
-
-# Temp files
-*.tmp
-*.temp
-
-# Sensitive files (never commit secrets)
-*.keystore
-*.jks
-secrets.properties
-
-# Gradle
-/.gradle
-/build
-/bootWs
-
-# IDEA
-*.iml
-/.idea
-/out
 
 # Logs
 *.log
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
 # H2 database files
-**/data
+*.mv.db
 
-# Secrets (don't commit personal tokens)
-**/secrets.properties
-
-# Docs: оставить только docs/general
+# Docs: ignore docs except docs/general
 /docs/*
-!docs/general/**
+!docs/general/
 
-# Node modules if any
-/node_modules
+# local settings
+/.env
 
-# Misc
-*.class

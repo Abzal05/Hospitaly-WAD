@@ -60,3 +60,56 @@ git push -u origin main
 ---
 
 Если хотите, я подготовлю набор коммитов и дам точную последовательность команд для безопасного пуша (я не буду использовать ваш PAT автоматически).
+
+# Demo2 (Hospital) — краткое руководство
+
+Проект: локальная демо-версия медицинского приложения на Spring Boot.
+
+Быстрый старт
+
+Требования:
+- Java 17+
+- Gradle (в проекте есть wrapper)
+
+Запуск локально:
+
+1) Освободите порт (если нужно):
+
+Для Windows PowerShell (рекомендуется запускать от имени администратора):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File stop-java-on-port.ps1 -Port 8080
+```
+
+Или используя bat-скрипт:
+
+```bash
+clear-port.bat 8080
+```
+
+2) Собрать и запустить:
+
+Windows (через PowerShell или cmd):
+
+```bash
+./gradlew.bat clean bootRun
+```
+
+Контролы:
+- Приложение по умолчанию слушает порт из `server.port` (см. `src/main/resources/application.properties`).
+- В проекте используется встроенная H2 база (in-memory) — данные сбрасываются при перезапуске.
+
+Как запушить в GitHub (локально):
+
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/ВашПользователь/ВашРепозиторий.git
+git push -u origin main
+```
+
+ВНИМАНИЕ: не храните персональные токены в репозитории. Для авторизации используйте git credential helper или SSH-ключи.
+
+Если нужен перенос структуры проекта в другой репозиторий — скажите, и я подготовлю инструкции.
