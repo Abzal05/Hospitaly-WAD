@@ -1,115 +1,280 @@
-# 🏥 Hospital Management System
+# 🏥 Hospital Management System — Система Управления Больницей
 
-Полнофункциональная система управления больницей с REST API и веб-интерфейсом, разработанная на **Spring Boot 4 + H2 Database**.
-
-## Быстрый старт
-
-1. Убедитесь, что установлены Java 17+ и Git.
-2. Склонируйте репозиторий (или используйте локальную папку).
-
-```bash
-git clone <URL_OF_YOUR_REPO>
-cd <REPO_DIR>
-```
-
-3. Построить и запустить приложение (Windows):
-
-```powershell
-# Очистить порт 8080/8081 (если занят)
-.\clear-port.bat 8081
-
-# Собрать
-gradlew.bat build -x test
-
-# Запустить
-gradlew.bat bootRun
-```
-
-Откройте браузер: http://localhost:8081 (или адрес, указанный в логах при старте)
-
-### Порт
-По умолчанию приложение использует порт 8081 (см. `src/main/resources/application.properties`). Приложение при старте подберёт свободный порт в диапазоне 8081..8099, если указанный порт занят.
-
-## GitHub: безопасный push с PAT
-
-Чтобы запушить изменения в GitHub безопасно:
-
-1. Не выкладывайте PAT в репозиторий. Удалите токены из кода и истории.
-2. Настройте remote и используйте PAT при вводе пароля в prompt, или настройте credential manager.
-
-Пример (один раз):
-
-```bash
-git remote add origin https://github.com/Abzal05/Hospital-WAD.git
-git branch -M main
-git push -u origin main
-```
-
-Если требуется push из скрипта, используй GitHub CLI или настроенный credential helper.
-
-## Структура проекта
-(см. ранее — осталось без изменений)
-
-## Запуск и отладка в IntelliJ
-- Run/Debug кнопки должны работать: убедитесь, что в конфигурации запуска в Program arguments и VM options не указаны конфликтующие -Dserver.port.
-- Если порт занят — сначала выполните `clear-port.bat`.
-
-## Утилиты
-- `clear-port.bat <port>` — освободит указанный порт (Windows, требует прав администратора для kill). 
+Полнофункциональная система управления больницей с **REST API** и веб-интерфейсом, разработанная на **Spring Boot 4 + H2 Database**.
 
 ---
 
-Если хотите, я подготовлю набор коммитов и дам точную последовательность команд для безопасного пуша (я не буду использовать ваш PAT автоматически).
+## ✨ Возможности
 
-# Demo2 (Hospital) — краткое руководство
+| Модуль | Функциональность |
+|---|---|
+| 👤 Авторизация | Регистрация, вход, JWT-авторизация, роли (USER, ADMIN) |
+| 🏥 Больницы | Управление больницами, информация об учреждении |
+| 👨‍⚕️ Врачи | Список врачей, специализации, привязка к больнице |
+| 🧑‍🤝‍🧑 Пациенты | Регистрация пациентов, история обращений |
+| 📋 Записи (Appointments) | Запись к врачу, управление статусом, отмена |
 
-Проект: локальная демо-версия медицинского приложения на Spring Boot.
+---
 
-Быстрый старт
+## 🛠 Технологии
 
-Требования:
-- Java 17+
-- Gradle (в проекте есть wrapper)
+| Компонент | Технология |
+|---|---|
+| Backend | Spring Boot 4.0.3, Spring Data JPA, Hibernate 7 |
+| База данных | H2 (in-memory, встроенная) |
+| Безопасность | Spring Security, JWT (JJWT 0.11.5), BCrypt |
+| Frontend | HTML5, CSS3, JavaScript (Vanilla), Thymeleaf |
+| Сборка | Gradle 8+ |
+| Java | 17+ |
 
-Запуск локально:
+---
 
-1) Освободите порт (если нужно):
+## 🚀 Быстрый старт
 
-Для Windows PowerShell (рекомендуется запускать от имени администратора):
+### Минимальные требования
 
-```powershell
-powershell -ExecutionPolicy Bypass -File stop-java-on-port.ps1 -Port 8080
-```
+- Java JDK 17+
+- Gradle (wrapper включён в проект)
 
-Или используя bat-скрипт:
-
-```bash
-clear-port.bat 8080
-```
-
-2) Собрать и запустить:
-
-Windows (через PowerShell или cmd):
-
-```bash
-./gradlew.bat clean bootRun
-```
-
-Контролы:
-- Приложение по умолчанию слушает порт из `server.port` (см. `src/main/resources/application.properties`).
-- В проекте используется встроенная H2 база (in-memory) — данные сбрасываются при перезапуске.
-
-Как запушить в GitHub (локально):
+### Запуск за 3 шага
 
 ```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/ВашПользователь/ВашРепозиторий.git
-git push -u origin main
+# 1. Клонировать репозиторий
+git clone https://github.com/Abzal05/Hospital-WAD.git
+cd Hospital-WAD
+
+# 2. Освободить порт (Windows, если занят)
+.\clear-port.bat 8081
+
+# 3. Запустить
+.\gradlew.bat bootRun
 ```
 
-ВНИМАНИЕ: не храните персональные токены в репозитории. Для авторизации используйте git credential helper или SSH-ключи.
+Откройте браузер: **http://localhost:8081**
 
-Если нужен перенос структуры проекта в другой репозиторий — скажите, и я подготовлю инструкции.
+> **Примечание:** Приложение использует встроенную H2 базу данных — данные сбрасываются при перезапуске. При старте автоматически создаются тестовые данные (врачи, пациенты, больницы).
+
+---
+
+## 🔌 REST API
+
+**Base URL:** `http://localhost:8081`
+
+Все защищённые эндпоинты требуют заголовок:
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+### 🔐 Аутентификация — `/api/auth`
+
+| Метод | URL | Описание | Auth |
+|---|---|---|---|
+| POST | `/api/auth/register` | Регистрация нового пользователя | ❌ |
+| POST | `/api/auth/login` | Вход, получение JWT токена | ❌ |
+
+#### POST `/api/auth/register`
+```json
+// Request
+{
+  "username": "ivan123",
+  "password": "secret123"
+}
+
+// Response 200
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+#### POST `/api/auth/login`
+```json
+// Request
+{
+  "username": "ivan123",
+  "password": "secret123"
+}
+
+// Response 200
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+---
+
+### 👨‍⚕️ Врачи — `/api/doctors`
+
+| Метод | URL | Описание | Auth |
+|---|---|---|---|
+| GET | `/api/doctors` | Список всех врачей (с пагинацией) | ✅ |
+| GET | `/api/doctors/{id}` | Получить врача по ID | ✅ |
+
+#### GET `/api/doctors?page=0&size=20`
+```json
+// Response 200
+{
+  "content": [
+    {
+      "id": 1,
+      "firstName": "Иван",
+      "lastName": "Петров",
+      "specialty": "Кардиология",
+      "email": "petrov@hospital.kz",
+      "phone": "+7-777-123-4567"
+    }
+  ],
+  "totalElements": 10,
+  "totalPages": 1
+}
+```
+
+---
+
+### 🧑‍🤝‍🧑 Пациенты — `/api/patients`
+
+| Метод | URL | Описание | Auth |
+|---|---|---|---|
+| GET | `/api/patients` | Список всех пациентов (с пагинацией) | ✅ |
+| GET | `/api/patients/{id}` | Получить пациента по ID | ✅ |
+
+#### GET `/api/patients?page=0&size=20`
+```json
+// Response 200
+{
+  "content": [
+    {
+      "id": 1,
+      "firstName": "Алия",
+      "lastName": "Сейткали",
+      "email": "aliya@mail.kz",
+      "phone": "+7-700-987-6543",
+      "gender": "Женский"
+    }
+  ],
+  "totalElements": 25,
+  "totalPages": 2
+}
+```
+
+---
+
+### 📋 Записи на приём — `/api/appointments`
+
+| Метод | URL | Описание | Auth |
+|---|---|---|---|
+| GET | `/api/appointments` | Список всех записей (с пагинацией) | ✅ |
+| POST | `/api/appointments` | Создать новую запись к врачу | ✅ |
+| PUT | `/api/appointments/{id}/cancel` | Отменить запись | ✅ |
+
+#### POST `/api/appointments`
+```json
+// Request
+{
+  "patientId": 1,
+  "doctorId": 2,
+  "hospitalId": 1,
+  "appointmentDateTime": "2026-03-15T10:00:00",
+  "reason": "Плановый осмотр"
+}
+
+// Response 201
+{
+  "id": 5,
+  "patientName": "Алия Сейткали",
+  "doctorName": "Иван Петров",
+  "status": "SCHEDULED",
+  "appointmentDateTime": "2026-03-15T10:00:00"
+}
+```
+
+#### PUT `/api/appointments/{id}/cancel`
+```
+// Response 204 No Content
+```
+
+---
+
+## 📝 Типичный сценарий работы с API
+
+```
+1. POST /api/auth/register  → зарегистрироваться, получить токен
+2. POST /api/auth/login     → войти, получить JWT токен
+3. GET  /api/doctors        → посмотреть список врачей (токен в заголовке)
+4. GET  /api/patients       → посмотреть список пациентов
+5. POST /api/appointments   → записаться к врачу
+6. PUT  /api/appointments/{id}/cancel → отменить запись
+```
+
+---
+
+## 📁 Структура проекта
+
+```
+Hospital-WAD/
+├── src/main/java/com/example/demo/
+│   ├── Demo2Application.java              — точка входа
+│   ├── config/
+│   │   ├── DataInitializer.java           — начальные тестовые данные
+│   │   ├── SecurityConfig.java            — настройка Spring Security + JWT
+│   │   └── SecurityBeansConfig.java       — бины безопасности
+│   ├── controller/
+│   │   ├── api/                           — REST API контроллеры
+│   │   │   ├── AuthRestController.java    — /api/auth (регистрация, вход)
+│   │   │   ├── DoctorRestController.java  — /api/doctors
+│   │   │   ├── PatientRestController.java — /api/patients
+│   │   │   └── AppointmentRestController.java — /api/appointments
+│   │   └── mvc/                           — MVC контроллеры (веб-интерфейс)
+│   │       ├── HomeController.java        — главная страница
+│   │       └── UiController.java          — страницы врачей, пациентов
+│   ├── dto/                               — DTO объекты
+│   ├── model/                             — JPA сущности
+│   │   ├── Hospital.java                  — Больница
+│   │   ├── Doctor.java                    — Врач
+│   │   ├── Patient.java                   — Пациент
+│   │   ├── Appointment.java               — Запись на приём
+│   │   ├── User.java                      — Пользователь системы
+│   │   └── Role.java                      — Роль (USER, ADMIN)
+│   ├── repository/                        — Spring Data репозитории
+│   ├── security/                          — JWT провайдер и фильтры
+│   └── service/                           — бизнес-логика
+└── src/main/resources/
+    ├── application.properties             — настройки приложения
+    └── templates/                         — Thymeleaf HTML шаблоны
+        ├── index.html                     — главная страница
+        ├── login.html                     — страница входа
+        ├── doctors.html                   — список врачей
+        └── patients.html                  — список пациентов
+```
+
+---
+
+## ⚙️ Конфигурация
+
+Настройки в `src/main/resources/application.properties`:
+
+```properties
+server.port=8081
+spring.datasource.url=jdbc:h2:mem:demo2db
+spring.h2.console.enabled=true
+```
+
+H2 консоль доступна по адресу: `http://localhost:8081/h2-console`
+
+---
+
+## 👤 Автор
+
+**Арон Абзал** — ВТиПО-33
+
+- 🎓 Группа: ВТиПО-33
+- 🐙 GitHub: [Abzal05](https://github.com/Abzal05)
+- 📧 Email: makeshnaiman@gmail.com
+
+---
+
+## 📄 Лицензия
+
+MIT License — свободное использование.
+
