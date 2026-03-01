@@ -270,7 +270,6 @@ H2 консоль доступна по адресу: `http://localhost:8081/h2-
 
 - 🎓 Группа: ВТиПО-33
 - 🐙 GitHub: [Abzal05](https://github.com/Abzal05)
-- 📧 Email: makeshnaiman@gmail.com
 
 ---
 
