@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Добавить пациента</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div class="container">
+
+    <header th:replace="~{fragments/header :: navbar}"></header>
+
+    <div class="admin-layout">
+        <nav th:replace="~{fragments/sidebar :: adminSidebar}" th:with="activePage='patients'"></nav>
+
+        <main class="admin-main">
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem">
+                <a th:href="@{/admin/patients}" style="color:var(--muted);text-decoration:none">← Назад</a>
+                <h2 style="margin:0">Добавить пациента</h2>
+            </div>
+
+            <div class="card" style="max-width:580px">
+                <form th:action="@{/admin/patients/create}" th:object="${patientDto}" method="post"
+                      style="display:flex;flex-direction:column;gap:1rem">
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                        <div class="form-field">
+                            <label>Имя *</label>
+                            <input type="text" th:field="*{firstName}" class="input" required/>
+                            <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="field-error"></span>
+                        </div>
+                        <div class="form-field">
+                            <label>Фамилия *</label>
+                            <input type="text" th:field="*{lastName}" class="input" required/>
+                            <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="field-error"></span>
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                        <div class="form-field">
+                            <label>Дата рождения</label>
+                            <input type="date" th:field="*{dob}" class="input"/>
+                            <span th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="field-error"></span>
+                        </div>
+                        <div class="form-field">
+                            <label>Пол</label>
+                            <select th:field="*{gender}" class="input">
+                                <option value="">— Не выбрано —</option>
+                                <option value="Мужской">Мужской</option>
+                                <option value="Женский">Женский</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                        <div class="form-field">
+                            <label>Email</label>
+                            <input type="email" th:field="*{email}" class="input"/>
+                            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="field-error"></span>
+                        </div>
+                        <div class="form-field">
+                            <label>Телефон</label>
+                            <input type="text" th:field="*{phone}" class="input"/>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Адрес</label>
+                        <input type="text" th:field="*{address}" class="input"/>
+                    </div>
+
+                    <div style="display:flex;gap:0.75rem">
+                        <button type="submit" class="btn">Добавить</button>
+                        <a th:href="@{/admin/patients}" class="btn secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
+</body>
+</html>

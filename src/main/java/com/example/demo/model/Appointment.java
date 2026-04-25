@@ -1,11 +1,18 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "appointments")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Appointment {
 
     @Id
@@ -26,79 +33,19 @@ public class Appointment {
 
     private LocalDateTime appointmentDateTime;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus status;
 
     private String reason;
 
+    @Builder.Default
     private Instant createdAt = Instant.now();
 
-    public Appointment() {
-    }
-
-    // getters and setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
-    public Doctor getDoctor() {
-        return doctor;
-    }
-
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
-    }
-
-    public Hospital getHospital() {
-        return hospital;
-    }
-
-    public void setHospital(Hospital hospital) {
-        this.hospital = hospital;
-    }
-
-    public LocalDateTime getAppointmentDateTime() {
-        return appointmentDateTime;
-    }
-
-    public void setAppointmentDateTime(LocalDateTime appointmentDateTime) {
-        this.appointmentDateTime = appointmentDateTime;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
+    public void transitionTo(AppointmentStatus next) {
+        if (!this.status.canTransitionTo(next)) {
+            throw new IllegalStateException(
+                "Cannot transition appointment from " + this.status + " to " + next);
+        }
+        this.status = next;
     }
 }
-

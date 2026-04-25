@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Профиль</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div class="container">
+
+    <header th:replace="~{fragments/header :: navbar}"></header>
+
+    <div style="max-width:700px;margin:0 auto">
+        <h2 style="margin-bottom:1.25rem">Мой профиль</h2>
+
+        <div class="card">
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+                <div class="logo" style="width:72px;height:72px;font-size:2rem">
+                    <span th:text="${#strings.substring(user.username,0,1).toUpperCase()}"></span>
+                </div>
+                <div>
+                    <div style="font-size:1.4rem;font-weight:800" th:text="${user.username}"></div>
+                    <div style="color:var(--muted)">
+                        <span th:each="r, stat : ${user.roles}"
+                              th:text="${r.name + (!stat.last ? ', ' : '')}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                <div>
+                    <div style="color:var(--muted);font-size:0.85rem">ID пользователя</div>
+                    <div style="font-weight:600" th:text="${user.id}"></div>
+                </div>
+                <div>
+                    <div style="color:var(--muted);font-size:0.85rem">Статус</div>
+                    <span th:if="${user.enabled}" class="status-active">Активен</span>
+                    <span th:unless="${user.enabled}" class="status-disabled">Отключён</span>
+                </div>
+                <div>
+                    <div style="color:var(--muted);font-size:0.85rem">Дата регистрации</div>
+                    <div style="font-weight:600"
+                         th:text="${#temporals.format(user.createdAt, 'dd.MM.yyyy HH:mm')}"></div>
+                </div>
+                <div>
+                    <div style="color:var(--muted);font-size:0.85rem">Права доступа</div>
+                    <span th:if="${isAdmin}" style="color:var(--primary);font-weight:700">Администратор</span>
+                    <span th:unless="${isAdmin}" style="color:var(--muted)">Пользователь</span>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(accounts)}" class="card">
+            <h3 style="margin:0 0 1rem 0">💳 Мои счета</h3>
+            <div style="display:flex;flex-direction:column;gap:0.75rem">
+                <div th:each="acc : ${accounts}"
+                     style="display:flex;justify-content:space-between;align-items:center;
+                            padding:0.75rem;background:#fff5f5;border-radius:10px">
+                    <div>
+                        <div style="font-weight:700" th:text="${acc.accountNumber}"></div>
+                        <div style="color:var(--muted);font-size:0.85rem"
+                             th:text="${acc.accountType.displayName}"></div>
+                    </div>
+                    <div style="font-size:1.25rem;font-weight:800;color:var(--primary)"
+                         th:text="${#numbers.formatDecimal(acc.balance, 1, 2) + ' ₸'}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${isAdmin}" style="margin-top:1rem">
+            <a th:href="@{/admin/users}" class="btn">Открыть панель администратора</a>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
+</body>
+</html>

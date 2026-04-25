@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="adminSidebar" class="admin-sidebar">
+    <div class="admin-sidebar-title">Панель администратора</div>
+
+    <a th:href="@{/admin/users}"
+       th:classappend="${activePage == 'users'} ? ' active' : ''">
+        👤 Пользователи
+    </a>
+    <a th:href="@{/admin/doctors}"
+       th:classappend="${activePage == 'doctors'} ? ' active' : ''">
+        👨‍⚕️ Врачи
+    </a>
+    <a th:href="@{/admin/patients}"
+       th:classappend="${activePage == 'patients'} ? ' active' : ''">
+        🏥 Пациенты
+    </a>
+    <a th:href="@{/admin/accounts}"
+       th:classappend="${activePage == 'accounts'} ? ' active' : ''">
+        💳 Счета
+    </a>
+
+    <hr style="border:none;border-top:1px solid #fde8e8;margin:0.5rem 0"/>
+    <a th:href="@{/}" style="color:var(--muted);font-size:0.9rem">← На главную</a>
+</nav>
+</body>
+</html>

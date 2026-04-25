@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Создать пользователя</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div class="container">
+
+    <header th:replace="~{fragments/header :: navbar}"></header>
+
+    <div class="admin-layout">
+        <nav th:replace="~{fragments/sidebar :: adminSidebar}" th:with="activePage='users'"></nav>
+
+        <main class="admin-main">
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem">
+                <a th:href="@{/admin/users}" style="color:var(--muted);text-decoration:none">← Назад</a>
+                <h2 style="margin:0">Создать пользователя</h2>
+            </div>
+
+            <div class="card" style="max-width:520px">
+                <form th:action="@{/admin/users/create}" th:object="${userDto}" method="post"
+                      style="display:flex;flex-direction:column;gap:1rem">
+
+                    <div class="form-field">
+                        <label>Логин *</label>
+                        <input type="text" th:field="*{username}" class="input" placeholder="минимум 3 символа" required/>
+                        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="field-error"></span>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Email <small style="color:var(--muted)">(для уведомлений)</small></label>
+                        <input type="email" th:field="*{email}" class="input" placeholder="user@example.com"/>
+                        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="field-error"></span>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Пароль *</label>
+                        <input type="password" th:field="*{password}" class="input" placeholder="минимум 4 символа" required/>
+                        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="field-error"></span>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Роли</label>
+                        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                            <label th:each="role : ${allRoles}" style="display:flex;align-items:center;gap:0.4rem;cursor:pointer">
+                                <input type="checkbox"
+                                       th:value="${role.name}"
+                                       name="roleNames"
+                                       th:checked="${userDto.roleNames != null and userDto.roleNames.contains(role.name)}"/>
+                                <span th:text="${role.name}"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
+                            <input type="checkbox" th:field="*{enabled}"/>
+                            Активен
+                        </label>
+                    </div>
+
+                    <div style="display:flex;gap:0.75rem">
+                        <button type="submit" class="btn">Создать</button>
+                        <a th:href="@{/admin/users}" class="btn secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
+</body>
+</html>

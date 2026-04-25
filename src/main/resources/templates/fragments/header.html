@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<header th:fragment="navbar" class="header">
+    <div class="brand">
+        <div class="logo">🏥</div>
+        <div>
+            <div class="site-title">Управление больницей</div>
+            <div style="color:var(--muted);font-size:0.9rem">Демонстрационная система</div>
+        </div>
+    </div>
+    <nav class="nav">
+        <a th:href="@{/}">Главная</a>
+        <a th:href="@{/doctors}">Врачи</a>
+        <a th:href="@{/patients}">Пациенты</a>
+
+        <a th:href="@{/profile}" sec:authorize="isAuthenticated()">Профиль</a>
+        <a th:href="@{/admin/users}"
+           style="background:var(--primary);color:white;padding:0.3rem 0.7rem;border-radius:8px"
+           sec:authorize="hasRole('ADMIN')">Админ</a>
+
+        <a th:href="@{/login}" sec:authorize="!isAuthenticated()">Вход</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;margin:0"
+              sec:authorize="isAuthenticated()">
+            <button type="submit"
+                    style="background:none;border:1px solid var(--primary);color:var(--primary);
+                           padding:0.3rem 0.7rem;border-radius:8px;cursor:pointer;font-weight:700">
+                Выйти
+            </button>
+        </form>
+    </nav>
+</header>
+</body>
+</html>

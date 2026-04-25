@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Администрирование - Счета</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div class="container">
+
+    <header th:replace="~{fragments/header :: navbar}"></header>
+
+    <div class="admin-layout">
+        <nav th:replace="~{fragments/sidebar :: adminSidebar}" th:with="activePage='accounts'"></nav>
+
+        <main class="admin-main">
+            <h2 style="margin:0 0 1rem 0">💳 Счета</h2>
+
+            <div th:if="${success}" class="alert-success" th:text="${success}"></div>
+
+            <!-- Создать новый счёт -->
+            <div class="card" style="margin-bottom:1.25rem">
+                <h3 style="margin:0 0 1rem 0">Открыть новый счёт</h3>
+                <form th:action="@{/admin/accounts/create}" method="post"
+                      style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap">
+                    <div class="form-field" style="flex:1;min-width:180px">
+                        <label>Пользователь</label>
+                        <select name="userId" class="input" required>
+                            <option value="">— Выберите —</option>
+                            <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.username}"></option>
+                        </select>
+                    </div>
+                    <div class="form-field" style="flex:1;min-width:160px">
+                        <label>Тип счёта</label>
+                        <select name="accountType" class="input" required>
+                            <option th:each="t : ${accountTypes}"
+                                    th:value="${t.name()}"
+                                    th:text="${t.displayName}"></option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn" style="margin-bottom:0.3rem">Открыть</button>
+                </form>
+            </div>
+
+            <!-- Список счетов -->
+            <div class="card" style="padding:0;overflow:hidden">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Номер счёта</th>
+                        <th>Тип</th>
+                        <th>Баланс</th>
+                        <th>Владелец</th>
+                        <th>Открыт</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="a : ${accounts}">
+                        <td th:text="${a.id}"></td>
+                        <td style="font-weight:700;font-family:monospace" th:text="${a.accountNumber}"></td>
+                        <td><span class="badge" th:text="${a.accountType.displayName}"></span></td>
+                        <td style="font-weight:700;color:var(--primary)"
+                            th:text="${#numbers.formatDecimal(a.balance,1,2) + ' ₸'}"></td>
+                        <td th:text="${a.user != null ? a.user.username : '—'}"></td>
+                        <td th:text="${a.createdAt != null ? a.createdAt.toString().substring(0,10) : '—'}"></td>
+                        <td>
+                            <form th:action="@{/admin/accounts/{id}/delete(id=${a.id})}" method="post"
+                                  style="display:inline" onsubmit="return confirm('Удалить счёт?')">
+                                <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(accounts)}">
+                        <td colspan="7" class="empty">Счета не найдены</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
+</body>
+</html>

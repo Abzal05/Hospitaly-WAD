@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Администрирование - Пользователи</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div class="container">
+
+    <header th:replace="~{fragments/header :: navbar}"></header>
+
+    <div class="admin-layout">
+        <nav th:replace="~{fragments/sidebar :: adminSidebar}" th:with="activePage='users'"></nav>
+
+        <main class="admin-main">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+                <h2 style="margin:0">👤 Пользователи</h2>
+                <a th:href="@{/admin/users/create}" class="btn">+ Создать</a>
+            </div>
+
+            <!-- Flash messages -->
+            <div th:if="${success}" class="alert-success" th:text="${success}"></div>
+
+            <div class="card" style="padding:0;overflow:hidden">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Логин</th>
+                        <th>Роли</th>
+                        <th>Статус</th>
+                        <th>Создан</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u : ${users}">
+                        <td th:text="${u.id}"></td>
+                        <td style="font-weight:600" th:text="${u.username}"></td>
+                        <td>
+                            <span th:each="r : ${u.roles}"
+                                  th:text="${r.name}"
+                                  th:classappend="${r.name == 'ROLE_ADMIN'} ? 'badge-admin' : 'badge'"
+                                  style="margin-right:0.25rem"></span>
+                        </td>
+                        <td>
+                            <span th:if="${u.enabled}" class="status-active">Активен</span>
+                            <span th:unless="${u.enabled}" class="status-disabled">Отключён</span>
+                        </td>
+                        <td th:text="${#temporals.format(u.createdAt, 'dd.MM.yyyy')}"></td>
+                        <td>
+                            <a th:href="@{/admin/users/{id}/edit(id=${u.id})}" class="btn btn-sm">Изменить</a>
+                            <form th:action="@{/admin/users/{id}/toggle(id=${u.id})}" method="post" style="display:inline">
+                                <button type="submit" class="btn btn-sm secondary"
+                                        th:text="${u.enabled} ? 'Откл.' : 'Вкл.'"></button>
+                            </form>
+                            <form th:action="@{/admin/users/{id}/delete(id=${u.id})}" method="post" style="display:inline"
+                                  onsubmit="return confirm('Удалить пользователя?')">
+                                <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(users)}">
+                        <td colspan="6" class="empty">Пользователи не найдены</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
+</body>
+</html>
