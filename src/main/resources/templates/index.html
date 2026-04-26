@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>Управление больницей - Главная</title>
+    <title>Hospital Management — Главная</title>
     <link rel="stylesheet" href="/css/style.css"/>
 </head>
 <body>
@@ -12,70 +12,572 @@
 
     <header th:replace="~{fragments/header :: navbar}"></header>
 
+    <!-- ══ HERO ══════════════════════════════════════════════════════════ -->
     <section class="hero">
         <div class="hero-card">
-            <h1>Управляйте пациентами, врачами и приёмами</h1>
-            <p style="color:var(--muted)">Современная система для управления работой больницы. Используйте веб-интерфейс или REST API для работы с данными.</p>
-
-            <div style="margin-top:1rem;display:flex;gap:0.75rem;align-items:center">
-                <input id="search-input" class="input" placeholder="Поиск врачей по имени или специальности..." style="flex:1"/>
-                <a class="btn" id="search-btn">Поиск</a>
-                <a class="btn secondary" id="open-appointment">Запись на приём</a>
-            </div>
-
-            <div class="widgets" style="margin-top:1rem">
-                <div class="widget">
-                    <small>👨‍⚕️ Врачей</small>
-                    <div style="font-size:1.15rem;font-weight:700" id="doctors-count">—</div>
-                </div>
-                <div class="widget">
-                    <small>👥 Пациентов</small>
-                    <div style="font-size:1.15rem;font-weight:700" id="patients-count">—</div>
-                </div>
-                <div class="widget">
-                    <small>📅 Приёмов</small>
-                    <div style="font-size:1.15rem;font-weight:700">В реальном времени</div>
-                </div>
+            <h1>Система управления больницей</h1>
+            <p style="color:var(--muted);margin:0.5rem 0 1rem">
+                Spring Boot · Spring Security · JPA · Thymeleaf · REST API · JWT · Email · 8 Design Patterns
+            </p>
+            <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
+                <input id="search-input" class="input" placeholder="Поиск врачей по имени или специальности..." style="flex:1;min-width:200px"/>
+                <button class="btn" id="search-btn">Поиск</button>
+                <button class="btn secondary" id="open-appointment">+ Записать на приём</button>
             </div>
         </div>
-        <div style="width:360px">
-            <div class="card">
-                <h3>⚡ Быстрые действия</h3>
-                <div class="quick-links">
-                    <a class="btn" th:href="@{/doctors}">📋 Врачи</a>
-                    <a class="btn secondary" th:href="@{/patients}">🏥 Пациенты</a>
+        <div style="width:340px;flex-shrink:0">
+            <div class="card" style="margin-bottom:0.75rem">
+                <h3 style="margin:0 0 0.75rem">Быстрые действия</h3>
+                <div style="display:flex;flex-direction:column;gap:0.5rem">
+                    <a class="btn" th:href="@{/doctors}" style="text-align:center">Врачи</a>
+                    <a class="btn secondary" th:href="@{/patients}" style="text-align:center">Пациенты</a>
                     <a class="btn" th:href="@{/profile}" sec:authorize="isAuthenticated()"
-                       style="background:var(--accent)">👤 Профиль</a>
+                       style="background:#0ea5e9;text-align:center">Мой профиль</a>
                     <a class="btn" th:href="@{/admin/users}" sec:authorize="hasRole('ADMIN')"
-                       style="background:#7c3aed">🛡 Админ</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>📊 Статистика</h3>
-                <p style="color:var(--muted);margin:0 0 0.5rem 0">Основные показатели системы</p>
-                <div style="display:flex;gap:0.5rem">
-                    <div class="badge">✨ Новых: 5</div>
-                    <div class="badge">⏳ В очереди: 3</div>
+                       style="background:#7c3aed;text-align:center">Панель администратора</a>
+                    <a th:href="@{/login}" sec:authorize="!isAuthenticated()"
+                       class="btn" style="background:#64748b;text-align:center">Войти в систему</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="section-grid">
-        <div>
-            <div class="card">
-                <h3>👨‍⚕️ Последние врачи</h3>
-                <div id="doctors-widget">Загрузка...</div>
+    <!-- ══ LIVE STATS ROW ════════════════════════════════════════════════ -->
+    <div class="dash-stats-row">
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon" style="background:#fee2e2;color:#dc2626">🏥</div>
+            <div>
+                <div class="dash-stat-value" th:text="${doctorCount}">—</div>
+                <div class="dash-stat-label">Врачей в системе</div>
             </div>
-            <div class="card">
-                <h3>📅 Свежие приёмы</h3>
-                <div id="appointments-widget">Загрузка...</div>
+        </div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon" style="background:#dbeafe;color:#2563eb">👥</div>
+            <div>
+                <div class="dash-stat-value" th:text="${patientCount}">—</div>
+                <div class="dash-stat-label">Пациентов</div>
             </div>
-            <div class="card">
-                <h3>👥 Последние пациенты</h3>
-                <div id="patients-widget">Загрузка...</div>
+        </div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon" style="background:#d1fae5;color:#059669">📅</div>
+            <div>
+                <div class="dash-stat-value" th:text="${appointmentCount}">—</div>
+                <div class="dash-stat-label">Приёмов всего</div>
             </div>
+        </div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon" style="background:#ede9fe;color:#7c3aed">👤</div>
+            <div>
+                <div class="dash-stat-value" th:text="${userCount}">—</div>
+                <div class="dash-stat-label">Пользователей</div>
+            </div>
+        </div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon" style="background:#fef3c7;color:#d97706">⏱</div>
+            <div>
+                <div class="dash-stat-value" th:text="${uptimeSeconds} + 'с'">—</div>
+                <div class="dash-stat-label">Аптайм сервера</div>
+            </div>
+        </div>
+        <div class="dash-stat-card">
+            <div class="dash-stat-icon" style="background:#fce7f3;color:#db2777">📈</div>
+            <div>
+                <div class="dash-stat-value" th:text="${appointmentsSinceStartup}">—</div>
+                <div class="dash-stat-label">Приёмов с запуска</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ FEATURES GRID ═════════════════════════════════════════════════ -->
+    <h2 class="section-title">Возможности системы</h2>
+    <div class="features-grid">
+
+        <!-- Email уведомления -->
+        <div class="feature-card">
+            <div class="feature-header" style="background:linear-gradient(135deg,#dc2626,#f87171)">
+                <span style="font-size:2rem">✉️</span>
+                <div>
+                    <div class="feature-title">Email уведомления</div>
+                    <div class="feature-subtitle">Лабораторная №10</div>
+                </div>
+            </div>
+            <div class="feature-body">
+                <div class="feature-status-row">
+                    <span>Стратегия:</span>
+                    <span class="feature-badge" style="background:#fef2f2;color:#dc2626"
+                          th:text="${notificationStrategy}">console</span>
+                </div>
+                <div class="feature-status-row">
+                    <span>SMTP активен:</span>
+                    <span class="feature-badge"
+                          th:style="${mailEnabled} ? 'background:#d1fae5;color:#065f46' : 'background:#fef2f2;color:#dc2626'"
+                          th:text="${mailEnabled} ? 'Да' : 'Нет (console mode)'">Нет</span>
+                </div>
+                <div class="feature-code-block">
+<pre>// EmailService — шаг 3 лаб.10
+@Service
+public class EmailService {
+  @Autowired
+  JavaMailSender mailSender;
+
+  @Async
+  public void sendEmail(
+      String to,
+      String subject,
+      String text) {
+    SimpleMailMessage m =
+      new SimpleMailMessage();
+    m.setTo(to);
+    m.setSubject(subject);
+    m.setText(text);
+    mailSender.send(m);
+  }
+}</pre>
+                </div>
+                <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+                    <span class="dash-tag">JavaMailSender</span>
+                    <span class="dash-tag">@Async</span>
+                    <span class="dash-tag">SMTP / Gmail</span>
+                    <span class="dash-tag">Strategy Pattern</span>
+                </div>
+                <div class="feature-endpoints">
+                    <div class="endpoint-row">
+                        <span class="method-badge post">POST</span>
+                        <code>/email/send</code>
+                        <span style="color:var(--muted);font-size:0.8rem">отправить письмо (Admin)</span>
+                    </div>
+                </div>
+                <div class="feature-note">
+                    Включить: <code>app.mail.enabled=true</code> +
+                    <code>app.notification.strategy=email</code>
+                    в <code>application.properties</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="feature-card">
+            <div class="feature-header" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">
+                <span style="font-size:2rem">🛡️</span>
+                <div>
+                    <div class="feature-title">Панель администратора</div>
+                    <div class="feature-subtitle">Лабораторная №8</div>
+                </div>
+            </div>
+            <div class="feature-body">
+                <p style="color:var(--muted);margin:0 0 0.75rem;font-size:0.9rem">
+                    Полный CRUD через веб-интерфейс. Доступ только для <code>ROLE_ADMIN</code>.
+                </p>
+                <div class="admin-links-grid">
+                    <a th:href="@{/admin/users}" class="admin-link-btn" sec:authorize="hasRole('ADMIN')">
+                        <span>👤</span> Пользователи
+                    </a>
+                    <a th:href="@{/admin/doctors}" class="admin-link-btn" sec:authorize="hasRole('ADMIN')">
+                        <span>🏥</span> Врачи
+                    </a>
+                    <a th:href="@{/admin/patients}" class="admin-link-btn" sec:authorize="hasRole('ADMIN')">
+                        <span>👥</span> Пациенты
+                    </a>
+                    <a th:href="@{/admin/accounts}" class="admin-link-btn" sec:authorize="hasRole('ADMIN')">
+                        <span>💳</span> Счета
+                    </a>
+                </div>
+                <div class="feature-code-block" style="margin-top:0.75rem">
+<pre>@Controller
+@RequestMapping("/admin")
+@PreAuthorize("hasRole('ADMIN')")
+public class AdminController {
+
+  @GetMapping("/users")
+  public String listUsers(Model m){
+    m.addAttribute("users",
+      userService.findAll());
+    return "admin/users";
+  }
+
+  @PostMapping("/users/create")
+  public String create(
+      @Valid @ModelAttribute
+      UserEditDto dto, ...) { ... }
+}</pre>
+                </div>
+                <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+                    <span class="dash-tag">@PreAuthorize</span>
+                    <span class="dash-tag">ROLE_ADMIN</span>
+                    <span class="dash-tag">@Valid</span>
+                    <span class="dash-tag">Thymeleaf</span>
+                </div>
+                <div sec:authorize="!hasRole('ADMIN')" class="feature-note" style="background:#fef3c7;border-color:#fbbf24;color:#92400e">
+                    Войдите как <strong>admin / admin123</strong> для доступа к панели
+                </div>
+            </div>
+        </div>
+
+        <!-- Security -->
+        <div class="feature-card">
+            <div class="feature-header" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8)">
+                <span style="font-size:2rem">🔒</span>
+                <div>
+                    <div class="feature-title">Spring Security + JWT</div>
+                    <div class="feature-subtitle">Лабораторная №8–9</div>
+                </div>
+            </div>
+            <div class="feature-body">
+                <div class="feature-code-block">
+<pre>// Двойная аутентификация:
+// Form Login (браузер) + JWT (API)
+
+// Получить JWT токен:
+POST /api/auth/login
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+// Использовать токен:
+GET /api/doctors
+Authorization: Bearer &lt;token&gt;
+
+// Роли:
+// ROLE_ADMIN — полный доступ
+// ROLE_USER  — чтение данных</pre>
+                </div>
+                <div style="margin-top:0.75rem">
+                    <div class="feature-endpoints">
+                        <div class="endpoint-row">
+                            <span class="method-badge post">POST</span>
+                            <code>/api/auth/login</code>
+                            <span style="color:var(--muted);font-size:0.8rem">получить JWT</span>
+                        </div>
+                        <div class="endpoint-row">
+                            <span class="method-badge post">POST</span>
+                            <code>/login</code>
+                            <span style="color:var(--muted);font-size:0.8rem">форм-логин</span>
+                        </div>
+                        <div class="endpoint-row">
+                            <span class="method-badge post">POST</span>
+                            <code>/logout</code>
+                            <span style="color:var(--muted);font-size:0.8rem">выход</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+                    <span class="dash-tag">JWT / JJWT</span>
+                    <span class="dash-tag">BCrypt</span>
+                    <span class="dash-tag">@EnableMethodSecurity</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design Patterns -->
+        <div class="feature-card">
+            <div class="feature-header" style="background:linear-gradient(135deg,#059669,#34d399)">
+                <span style="font-size:2rem">🧩</span>
+                <div>
+                    <div class="feature-title">Design Patterns</div>
+                    <div class="feature-subtitle">8 паттернов проектирования</div>
+                </div>
+            </div>
+            <div class="feature-body">
+                <div class="patterns-grid">
+                    <div class="pattern-item">
+                        <span class="pattern-icon">🏗️</span>
+                        <div>
+                            <div class="pattern-name">Builder</div>
+                            <div class="pattern-where">User, Doctor, Patient, Appointment (Lombok)</div>
+                        </div>
+                    </div>
+                    <div class="pattern-item">
+                        <span class="pattern-icon">🏭</span>
+                        <div>
+                            <div class="pattern-name">Factory</div>
+                            <div class="pattern-where">AccountFactory — создаёт Account по типу</div>
+                        </div>
+                    </div>
+                    <div class="pattern-item">
+                        <span class="pattern-icon">🔄</span>
+                        <div>
+                            <div class="pattern-name">State</div>
+                            <div class="pattern-where">AppointmentStatus.canTransitionTo()</div>
+                        </div>
+                    </div>
+                    <div class="pattern-item">
+                        <span class="pattern-icon">♟️</span>
+                        <div>
+                            <div class="pattern-name">Strategy</div>
+                            <div class="pattern-where">NotificationStrategy: console / email</div>
+                        </div>
+                    </div>
+                    <div class="pattern-item">
+                        <span class="pattern-icon">👁️</span>
+                        <div>
+                            <div class="pattern-name">Observer</div>
+                            <div class="pattern-where">ApplicationEvent + @EventListener</div>
+                        </div>
+                    </div>
+                    <div class="pattern-item">
+                        <span class="pattern-icon">🏛️</span>
+                        <div>
+                            <div class="pattern-name">Facade</div>
+                            <div class="pattern-where">HospitalFacade — агрегирует сервисы</div>
+                        </div>
+                    </div>
+                    <div class="pattern-item">
+                        <span class="pattern-icon">1️⃣</span>
+                        <div>
+                            <div class="pattern-name">Singleton</div>
+                            <div class="pattern-where">SystemStatsService @Scope("singleton")</div>
+                        </div>
+                    </div>
+                    <div class="pattern-item">
+                        <span class="pattern-icon">🗃️</span>
+                        <div>
+                            <div class="pattern-name">Repository</div>
+                            <div class="pattern-where">Spring Data JPA — все репозитории</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REST API -->
+        <div class="feature-card">
+            <div class="feature-header" style="background:linear-gradient(135deg,#d97706,#fbbf24)">
+                <span style="font-size:2rem">🔌</span>
+                <div>
+                    <div class="feature-title">REST API</div>
+                    <div class="feature-subtitle">JSON эндпоинты</div>
+                </div>
+            </div>
+            <div class="feature-body">
+                <div class="feature-endpoints">
+                    <div class="endpoint-row"><span class="method-badge post">POST</span><code>/api/auth/login</code><span style="color:var(--muted);font-size:0.78rem">JWT токен</span></div>
+                    <div class="endpoint-row"><span class="method-badge get">GET</span><code>/api/doctors</code><span style="color:var(--muted);font-size:0.78rem">список врачей (страницы)</span></div>
+                    <div class="endpoint-row"><span class="method-badge get">GET</span><code>/api/doctors/{id}</code><span style="color:var(--muted);font-size:0.78rem">врач по ID</span></div>
+                    <div class="endpoint-row"><span class="method-badge post">POST</span><code>/api/doctors</code><span style="color:var(--muted);font-size:0.78rem">создать врача</span></div>
+                    <div class="endpoint-row"><span class="method-badge put">PUT</span><code>/api/doctors/{id}</code><span style="color:var(--muted);font-size:0.78rem">обновить</span></div>
+                    <div class="endpoint-row"><span class="method-badge del">DELETE</span><code>/api/doctors/{id}</code><span style="color:var(--muted);font-size:0.78rem">удалить</span></div>
+                    <div class="endpoint-row"><span class="method-badge get">GET</span><code>/api/patients</code><span style="color:var(--muted);font-size:0.78rem">список пациентов</span></div>
+                    <div class="endpoint-row"><span class="method-badge post">POST</span><code>/api/appointments</code><span style="color:var(--muted);font-size:0.78rem">создать приём</span></div>
+                    <div class="endpoint-row"><span class="method-badge post">POST</span><code>/api/appointments/{id}/cancel</code><span style="color:var(--muted);font-size:0.78rem">отменить</span></div>
+                    <div class="endpoint-row"><span class="method-badge post">POST</span><code>/email/send</code><span style="color:var(--muted);font-size:0.78rem">отправить email (Admin)</span></div>
+                    <div class="endpoint-row"><span class="method-badge get">GET</span><code>/h2-console</code><span style="color:var(--muted);font-size:0.78rem">консоль БД (dev)</span></div>
+                </div>
+                <div class="feature-code-block" style="margin-top:0.75rem">
+<pre># Пример: отправить email через API
+curl -X POST http://localhost:8081/email/send \
+  -H "Content-Type: application/json" \
+  -u admin:admin123 \
+  -d '{
+    "to":      "user@example.com",
+    "subject": "Тест",
+    "text":    "Привет из Hospital System!"
+  }'</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lombok DTO Refactoring -->
+        <div class="feature-card">
+            <div class="feature-header" style="background:linear-gradient(135deg,#0f766e,#2dd4bf)">
+                <span style="font-size:2rem">🏗️</span>
+                <div>
+                    <div class="feature-title">Lombok @Data на DTO</div>
+                    <div class="feature-subtitle">Рефакторинг — −360 строк boilerplate</div>
+                </div>
+            </div>
+            <div class="feature-body">
+                <p style="color:var(--muted);margin:0 0 0.75rem;font-size:0.9rem">
+                    10 DTO-классов переведены с ручных getter/setter на <code>@Data</code>.
+                    Lombok генерирует всё автоматически при компиляции.
+                </p>
+                <div class="feature-code-block">
+<pre>// ДО: 94 строки boilerplate
+public class PatientDto {
+  private Long id;
+  private String firstName;
+  // ...
+
+  public Long getId() { return id; }
+  public void setId(Long id) {
+    this.id = id;
+  }
+  // ещё 80 строк...
+}
+
+// ПОСЛЕ: 16 строк с Lombok
+@Data
+public class PatientDto {
+  private Long id;
+  private String firstName;
+  private String lastName;
+  private LocalDate dob;
+  private String gender;
+  private String email;
+  private String phone;
+  private String address;
+  private Instant createdAt;
+  // getter/setter/equals/hashCode/
+  // toString — генерирует Lombok
+}</pre>
+                </div>
+                <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+                    <span class="dash-tag">@Data</span>
+                    <span class="dash-tag">@Getter / @Setter</span>
+                    <span class="dash-tag">@NoArgsConstructor</span>
+                    <span class="dash-tag">10 классов</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bean Validation -->
+        <div class="feature-card">
+            <div class="feature-header" style="background:linear-gradient(135deg,#b45309,#f59e0b)">
+                <span style="font-size:2rem">✅</span>
+                <div>
+                    <div class="feature-title">Bean Validation — полная цепочка</div>
+                    <div class="feature-subtitle">Лабораторная №11 — @Valid + BindingResult</div>
+                </div>
+            </div>
+            <div class="feature-body">
+                <p style="color:var(--muted);margin:0 0 0.75rem;font-size:0.9rem">
+                    Валидация на трёх уровнях: DTO-аннотации → контроллер (@Valid) →
+                    возврат формы с ошибками или JSON 400.
+                </p>
+                <div class="feature-code-block">
+<pre>// 1. DTO — аннотации ограничений
+@Data
+public class LoginRequest {
+  @NotBlank(message = "Логин обязателен")
+  private String username;
+
+  @NotBlank(message = "Пароль обязателен")
+  private String password;
+}
+
+// 2. Контроллер MVC
+@PostMapping("/users/create")
+public String create(
+    @Valid @ModelAttribute UserEditDto dto,
+    BindingResult result, Model model) {
+
+  if (result.hasErrors()) {
+    model.addAttribute("allRoles",
+      roleRepository.findAll());
+    return "admin/user-create"; // форма с ошибками
+  }
+  userService.create(dto);
+  return "redirect:/admin/users";
+}
+
+// 3. REST — JSON-ошибки через @RestControllerAdvice
+// POST /api/auth/login {"username":""}
+// → HTTP 400
+// { "errors": { "username": "Логин обязателен" } }</pre>
+                </div>
+                <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+                    <span class="dash-tag">@Valid</span>
+                    <span class="dash-tag">@NotBlank</span>
+                    <span class="dash-tag">@Email</span>
+                    <span class="dash-tag">BindingResult</span>
+                    <span class="dash-tag">@ControllerAdvice</span>
+                </div>
+                <div class="feature-endpoints" style="margin-top:0.75rem">
+                    <div class="endpoint-row">
+                        <span class="method-badge post">POST</span>
+                        <code>/api/auth/login</code>
+                        <span style="color:var(--muted);font-size:0.78rem">400 если поля пустые</span>
+                    </div>
+                    <div class="endpoint-row">
+                        <span class="method-badge post">POST</span>
+                        <code>/admin/users/create</code>
+                        <span style="color:var(--muted);font-size:0.78rem">форма с inline-ошибками</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Observer Events -->
+        <div class="feature-card">
+            <div class="feature-header" style="background:linear-gradient(135deg,#db2777,#f472b6)">
+                <span style="font-size:2rem">👁️</span>
+                <div>
+                    <div class="feature-title">Observer / События</div>
+                    <div class="feature-subtitle">Spring ApplicationEvent</div>
+                </div>
+            </div>
+            <div class="feature-body">
+                <div class="feature-code-block">
+<pre>// Публикация события:
+eventPublisher.publishEvent(
+  new UserRegisteredEvent(this, user));
+
+// Подписчик — DomainEventListener:
+@EventListener
+@Async
+public void onUserRegistered(
+    UserRegisteredEvent event) {
+
+  notificationService.sendWelcome(
+    event.getUser().getEmail(),
+    event.getUser().getUsername());
+}</pre>
+                </div>
+                <div class="events-list" style="margin-top:0.75rem">
+                    <div class="event-row">
+                        <span class="event-dot" style="background:#dc2626"></span>
+                        <div>
+                            <div style="font-weight:600;font-size:0.9rem">UserRegisteredEvent</div>
+                            <div style="color:var(--muted);font-size:0.8rem">→ sendWelcome(email, username)</div>
+                        </div>
+                    </div>
+                    <div class="event-row">
+                        <span class="event-dot" style="background:#2563eb"></span>
+                        <div>
+                            <div style="font-weight:600;font-size:0.9rem">AppointmentCreatedEvent</div>
+                            <div style="color:var(--muted);font-size:0.8rem">→ sendAppointmentConfirmed(email, ...)</div>
+                        </div>
+                    </div>
+                    <div class="event-row">
+                        <span class="event-dot" style="background:#059669"></span>
+                        <div>
+                            <div style="font-weight:600;font-size:0.9rem">AppointmentStatusChangedEvent</div>
+                            <div style="color:var(--muted);font-size:0.8rem">→ sendAppointmentCancelled(email, ...)</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+                    <span class="dash-tag">@EventListener</span>
+                    <span class="dash-tag">@Async</span>
+                    <span class="dash-tag">ApplicationEventPublisher</span>
+                </div>
+                <div class="feature-status-row" style="margin-top:0.75rem">
+                    <span>Новых пользователей с запуска:</span>
+                    <strong th:text="${usersSinceStartup}">0</strong>
+                </div>
+                <div class="feature-status-row">
+                    <span>Приёмов создано с запуска:</span>
+                    <strong th:text="${appointmentsSinceStartup}">0</strong>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══ LIVE DATA WIDGETS ══════════════════════════════════════════════ -->
+    <h2 class="section-title">Данные в реальном времени</h2>
+    <div class="widgets-row">
+        <div class="card">
+            <h3>Последние врачи</h3>
+            <div id="doctors-widget">Загрузка...</div>
+        </div>
+        <div class="card">
+            <h3>Последние пациенты</h3>
+            <div id="patients-widget">Загрузка...</div>
+        </div>
+        <div class="card">
+            <h3>Последние приёмы</h3>
+            <div id="appointments-widget">Загрузка...</div>
         </div>
     </div>
 
@@ -84,7 +586,6 @@
 
 <div id="modal-root" style="display:none"></div>
 <div class="toast-container" id="toast-root"></div>
-
 <script src="/js/app.js"></script>
 <script>
 document.getElementById('search-btn').addEventListener('click', () => {

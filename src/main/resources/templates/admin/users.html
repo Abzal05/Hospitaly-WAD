@@ -30,6 +30,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Логин</th>
+                        <th>Email</th>
                         <th>Роли</th>
                         <th>Статус</th>
                         <th>Создан</th>
@@ -40,6 +41,7 @@
                     <tr th:each="u : ${users}">
                         <td th:text="${u.id}"></td>
                         <td style="font-weight:600" th:text="${u.username}"></td>
+                        <td style="color:var(--muted);font-size:0.88rem" th:text="${u.email != null ? u.email : '—'}"></td>
                         <td>
                             <span th:each="r : ${u.roles}"
                                   th:text="${r.name}"
@@ -64,7 +66,7 @@
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(users)}">
-                        <td colspan="6" class="empty">Пользователи не найдены</td>
+                        <td colspan="7" class="empty">Пользователи не найдены</td>
                     </tr>
                     </tbody>
                 </table>

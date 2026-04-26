@@ -35,6 +35,10 @@
                     <div style="font-weight:600" th:text="${user.id}"></div>
                 </div>
                 <div>
+                    <div style="color:var(--muted);font-size:0.85rem">Email</div>
+                    <div style="font-weight:600" th:text="${user.email != null ? user.email : '—'}"></div>
+                </div>
+                <div>
                     <div style="color:var(--muted);font-size:0.85rem">Статус</div>
                     <span th:if="${user.enabled}" class="status-active">Активен</span>
                     <span th:unless="${user.enabled}" class="status-disabled">Отключён</span>
